@@ -6,7 +6,9 @@ project(SimpleRaytracing2D
     LANGUAGES CXX
 )
 
-# Set C++ standard
+# ============================================================================
+# C++ Standard Configuration
+# ============================================================================
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -14,17 +16,31 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Export compile commands for IDE support
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Add compiler warnings
+# ============================================================================
+# Compiler Options
+# ============================================================================
 if(MSVC)
     add_compile_options(/W4)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# Include directories
-include_directories(${PROJECT_SOURCE_DIR}/include)
+# ============================================================================
+# Package Dependencies
+# ============================================================================
+# Add new packages here using find_package()
 
-# Collect source files
+find_package(SDL2 REQUIRED)
+
+# ============================================================================
+# Include Directories
+# ============================================================================
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${SDL2_INCLUDE_DIRS})
+
+# ============================================================================
+# Source Files
+# ============================================================================
 file(GLOB_RECURSE SOURCES 
     ${PROJECT_SOURCE_DIR}/src/*.cpp
 )
@@ -34,17 +50,18 @@ file(GLOB_RECURSE HEADERS
     ${PROJECT_SOURCE_DIR}/include/*.hpp
 )
 
-# Create executable
+# ============================================================================
+# Target Definition
+# ============================================================================
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+
+# Link libraries
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 
 # Set output directories
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
-
-# Optional: Add subdirectories for tests, examples, etc.
-# add_subdirectory(tests)
-# add_subdirectory(examples)
 
 # Print build information
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
